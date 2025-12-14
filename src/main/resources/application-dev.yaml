@@ -1,0 +1,43 @@
+#development configuration
+#dev profile specific settings
+
+server:
+ port: 8082
+
+#database configuration for dev
+spring:
+ datasource:
+   url: jdbc:postgresql://localhost:5432/postgres
+   username: postgres
+   password: yashavee
+
+#hibernate configuration
+spring.jpa:
+   hibernate:
+     ddl-auto: update
+   show-sql: true
+   properties:
+     hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      format_sql: true
+
+# HikariCP connection pool settings (Optimized for PostgreSQL)
+spring.datasource.hikari:
+  pool-name: HikariCP                 # Custom name for the pool (appears in logs/monitoring)
+  maximum-pool-size: 10               # Max total connections (idle + busy) allowed at once
+  minimum-idle: 5                     # Minimum number of idle connections kept ready to use
+  idle-timeout: 30000                 # Time (ms) an idle connection waits before being closed (30s)
+  max-lifetime: 600000                # Max life (ms) of a connection in the pool before replacement (10m)
+  connection-timeout: 30000           # Max time (ms) app waits for a connection before throwing error (30s)
+  validation-timeout: 5000            # Max time (ms) to wait for database to prove connection is alive
+  leak-detection-threshold: 15000     # Time (ms) after which a borrowed connection is logged as "leaked"
+  initialization-fail-timeout: -1     # -1: Start app even if DB is down (retry later); 0: Fail start if DB down
+
+  # --- New Additions ---
+  keepalive-time: 300000              # Pings DB every 5 mins to prevent firewalls from killing idle connections
+  register-mbeans: true               # Exposes pool stats to JMX/Actuator for monitoring
+
+  # --- PostgreSQL Specific Optimization ---
+  data-source-properties:
+    reWriteBatchedInserts: true      # Optimization: Rewrites batch inserts into single SQL statement (Massive speedup)
+    logUnclosedConnections: true     # Debugging: logs stack trace if you forget to close a connection

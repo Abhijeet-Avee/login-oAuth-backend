@@ -1,0 +1,3 @@
+#test configuration
+server:
+    port: 8081
